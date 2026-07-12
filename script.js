@@ -1,48 +1,114 @@
-function addStudent() {
+const API_BASE = 'http://localhost:5000/api';
 
-    let name = document.getElementById("name").value;
-    let reg = document.getElementById("regno").value;
+const studentsBody = document.getElementById('studentsBody');
+const studentForm = document.getElementById('studentForm');
+const subjectsContainer = document.getElementById('subjectsContainer');
 
-    let m1 = parseInt(document.getElementById("m1").value);
-    let m2 = parseInt(document.getElementById("m2").value);
-    let m3 = parseInt(document.getElementById("m3").value);
+// ---------- Add subject row ----------
+document.getElementById('addSubjectBtn').addEventListener('click', () => {
+  const row = document.createElement('div');
+  row.className = 'subject-row';
+  row.innerHTML = `
+    <input type="text" class="subjectName" placeholder="Subject" required />
+    <input type="number" class="marksObtained" placeholder="Marks Obtained" required />
+    <input type="number" class="maxMarks" placeholder="Max Marks" value="100" />
+  `;
+  subjectsContainer.appendChild(row);
+});
 
-    if (name === "" || reg === "" || isNaN(m1) || isNaN(m2) || isNaN(m3)) {
-        alert("Please fill all the fields.");
-        return;
-    }
+// ---------- Submit new student ----------
+studentForm.addEventListener('submit', async (e) => {
+  e.preventDefault();
 
-    let total = m1 + m2 + m3;
-    let average = (total / 3).toFixed(2);
+  const subjectRows = document.querySelectorAll('.subject-row');
+  const subjects = Array.from(subjectRows).map((row) => ({
+    subject_name: row.querySelector('.subjectName').value,
+    marks_obtained: parseFloat(row.querySelector('.marksObtained').value),
+    max_marks: parseFloat(row.querySelector('.maxMarks').value) || 100,
+  }));
 
-    let grade = "";
+  const payload = {
+    roll_no: document.getElementById('rollNo').value,
+    name: document.getElementById('studentName').value,
+    class: document.getElementById('studentClass').value,
+    subjects,
+  };
 
-    if (average >= 90)
-        grade = "A+";
-    else if (average >= 80)
-        grade = "A";
-    else if (average >= 70)
-        grade = "B";
-    else if (average >= 60)
-        grade = "C";
-    else if (average >= 50)
-        grade = "D";
-    else
-        grade = "Fail";
+  const res = await fetch(`${API_BASE}/students`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload),
+  });
 
-    let table = document.getElementById("resultTable");
+  if (!res.ok) {
+    const err = await res.json();
+    alert(err.error || 'Failed to save student');
+    return;
+  }
 
-    let row = table.insertRow();
+  studentForm.reset();
+  // Reset subject rows to just one
+  subjectsContainer.innerHTML = `
+    <div class="subject-row">
+      <input type="text" class="subjectName" placeholder="Subject" required />
+      <input type="number" class="marksObtained" placeholder="Marks Obtained" required />
+      <input type="number" class="maxMarks" placeholder="Max Marks" value="100" />
+    </div>
+  `;
 
-    row.insertCell(0).innerHTML = name;
-    row.insertCell(1).innerHTML = reg;
-    row.insertCell(2).innerHTML = total;
-    row.insertCell(3).innerHTML = average;
-    row.insertCell(4).innerHTML = grade;
+  loadStudents();
+});
 
-    document.getElementById("name").value = "";
-    document.getElementById("regno").value = "";
-    document.getElementById("m1").value = "";
-    document.getElementById("m2").value = "";
-    document.getElementById("m3").value = "";
+// ---------- Load / render students ----------
+async function loadStudents() {
+  const res = await fetch(`${API_BASE}/students`);
+  const students = await res.json();
+  renderStudents(students);
 }
+
+function renderStudents(students) {
+  studentsBody.innerHTML = '';
+  students.forEach((s) => {
+    const subjectsText = s.subjects
+      .map((sub) => `${sub.subject_name}: ${sub.marks_obtained}/${sub.max_marks}`)
+      .join(', ');
+
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td>${s.roll_no}</td>
+      <td>${s.name}</td>
+      <td>${s.class}</td>
+      <td>${subjectsText || '-'}</td>
+      <td>${s.result.total}/${s.result.maxTotal}</td>
+      <td>${s.result.percentage}%</td>
+      <td>${s.result.grade}</td>
+      <td class="${s.result.status === 'PASS' ? 'status-pass' : 'status-fail'}">${s.result.status}</td>
+      <td><button class="delete-btn" data-id="${s.id}">Delete</button></td>
+    `;
+    studentsBody.appendChild(tr);
+  });
+
+  document.querySelectorAll('.delete-btn').forEach((btn) => {
+    btn.addEventListener('click', async () => {
+      if (!confirm('Delete this student?')) return;
+      await fetch(`${API_BASE}/students/${btn.dataset.id}`, { method: 'DELETE' });
+      loadStudents();
+    });
+  });
+}
+
+// ---------- Search ----------
+document.getElementById('searchBtn').addEventListener('click', async () => {
+  const q = document.getElementById('searchInput').value;
+  const res = await fetch(`${API_BASE}/search?q=${encodeURIComponent(q)}`);
+  const students = await res.json();
+  renderStudents(students);
+});
+
+document.getElementById('clearSearchBtn').addEventListener('click', () => {
+  document.getElementById('searchInput').value = '';
+  loadStudents();
+});
+
+// ---------- Init ----------
+loadStudents();

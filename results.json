@@ -1,0 +1,22 @@
+{
+  "students": [
+    {
+      "id": 1,
+      "roll_no": "063",
+      "name": "VAISHINI",
+      "class": "12",
+      "created_at": "2026-07-12T05:33:36.968Z"
+    }
+  ],
+  "subjects": [
+    {
+      "id": 1,
+      "student_id": 1,
+      "subject_name": "ENGLISH",
+      "marks_obtained": 94,
+      "max_marks": 100
+    }
+  ],
+  "nextStudentId": 2,
+  "nextSubjectId": 2
+}

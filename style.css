@@ -1,69 +1,79 @@
-body{
-    font-family: Arial, sans-serif;
-    background:#f4f4f4;
-    margin:0;
-    padding:30px;
+* { box-sizing: border-box; }
+
+body {
+  font-family: 'Segoe UI', Arial, sans-serif;
+  background: #f2f4f8;
+  margin: 0;
+  color: #1f2937;
 }
 
-.container{
-    width:80%;
-    margin:auto;
-    background:white;
-    padding:20px;
-    border-radius:10px;
-    box-shadow:0 0 10px rgba(0,0,0,0.2);
+header {
+  background: #1e3a8a;
+  color: #fff;
+  padding: 20px 30px;
 }
 
-h1{
-    text-align:center;
-    color:#2c3e50;
-    margin-bottom:20px;
+header h1 { margin: 0; font-size: 1.5rem; }
+
+main {
+  max-width: 1000px;
+  margin: 30px auto;
+  padding: 0 20px;
 }
 
-.form{
-    display:grid;
-    grid-template-columns:repeat(2,1fr);
-    gap:15px;
-    margin-bottom:25px;
+.card {
+  background: #fff;
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 25px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.08);
 }
 
-input{
-    padding:10px;
-    font-size:16px;
-    border:1px solid #ccc;
-    border-radius:5px;
+.card h2 { margin-top: 0; font-size: 1.1rem; color: #1e3a8a; }
+
+form input, #searchInput {
+  padding: 8px 10px;
+  margin: 5px 5px 5px 0;
+  border: 1px solid #cbd5e1;
+  border-radius: 5px;
+  font-size: 0.9rem;
 }
 
-button{
-    padding:12px;
-    background:#27ae60;
-    color:white;
-    border:none;
-    border-radius:5px;
-    font-size:16px;
-    cursor:pointer;
+.subject-row { margin-bottom: 6px; }
+
+button {
+  background: #1e3a8a;
+  color: #fff;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  margin: 5px 5px 5px 0;
 }
 
-button:hover{
-    background:#219150;
+button:hover { background: #16306b; }
+
+#addSubjectBtn { background: #64748b; }
+#addSubjectBtn:hover { background: #475569; }
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+  font-size: 0.85rem;
 }
 
-table{
-    width:100%;
-    border-collapse:collapse;
+th, td {
+  border: 1px solid #e2e8f0;
+  padding: 8px;
+  text-align: left;
 }
 
-th, td{
-    border:1px solid #ccc;
-    padding:10px;
-    text-align:center;
-}
+th { background: #eef2ff; }
 
-th{
-    background:#3498db;
-    color:white;
-}
+.status-pass { color: #15803d; font-weight: bold; }
+.status-fail { color: #b91c1c; font-weight: bold; }
 
-tr:nth-child(even){
-    background:#f2f2f2;
-}
+.delete-btn { background: #b91c1c; }
+.delete-btn:hover { background: #7f1d1d; }
