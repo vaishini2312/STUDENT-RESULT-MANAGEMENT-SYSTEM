@@ -49,3 +49,9 @@ Keep the backend terminal running while you use the frontend.
 - Grades: A+ (90+), A (80+), B (70+), C (60+), D (50+), E (33+), F (below 33).
 - Switching to MySQL/PostgreSQL later only requires changing `database.js` and
   the SQL calls in `server.js` — the API shape stays the same.
+
+## Prototype Video
+
+Watch the prototype video here:
+
+https://drive.google.com/file/d/13mcjs1ULp-KWp8YUhblK539LM_jIFgZY/view?usp=drivesdk 
