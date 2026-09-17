@@ -10,7 +10,7 @@ document.getElementById('addSubjectBtn').addEventListener('click', () => {
   row.className = 'subject-row';
   row.innerHTML = `
     <input type="text" class="subjectName" placeholder="Subject" required />
-    <input type="number" class="marksObtained" placeholder="Marks Obtained" required />
+    <input type="number" class="marksObtained" placeholder="Marks Obtained" min="0" max="100" required />
     <input type="number" class="maxMarks" placeholder="Max Marks" value="100" />
   `;
   subjectsContainer.appendChild(row);
@@ -83,11 +83,44 @@ function renderStudents(students) {
       <td>${s.result.percentage}%</td>
       <td>${s.result.grade}</td>
       <td class="${s.result.status === 'PASS' ? 'status-pass' : 'status-fail'}">${s.result.status}</td>
-      <td><button class="delete-btn" data-id="${s.id}">Delete</button></td>
+      <td>
+  <button class="edit-btn" data-id="${s.id}">Edit</button>
+  <button class="delete-btn" data-id="${s.id}">Delete</button>
+</td>
     `;
     studentsBody.appendChild(tr);
   });
+document.querySelectorAll('.edit-btn').forEach((btn) => {
+  btn.addEventListener('click', async () => {
+    const id = btn.dataset.id;
 
+    const student = await fetch(`${API_BASE}/students/${id}`).then(res => res.json());
+
+    const newName = prompt('Enter new student name:', student.name);
+    if (newName === null) return;
+
+    const newClass = prompt('Enter new class:', student.class);
+    if (newClass === null) return;
+
+    const res = await fetch(`${API_BASE}/students/${id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        name: newName,
+        class: newClass
+      })
+    });
+
+    if (!res.ok) {
+      const err = await res.json();
+      alert(err.error || 'Update failed');
+      return;
+    }
+
+    alert('Student updated successfully!');
+    loadStudents();
+  });
+});
   document.querySelectorAll('.delete-btn').forEach((btn) => {
     btn.addEventListener('click', async () => {
       if (!confirm('Delete this student?')) return;
