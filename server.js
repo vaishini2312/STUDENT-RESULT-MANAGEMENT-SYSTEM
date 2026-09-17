@@ -390,7 +390,9 @@ app.get('/api/search', (req, res) => {
 });
 
 // ---------- START SERVER ----------
-
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'index.html'));
+});
 app.listen(PORT, () => {
   console.log(
     `Student Result API running at http://localhost:${PORT}`
